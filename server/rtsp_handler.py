@@ -5,9 +5,9 @@ import socket
 import struct
 
 class RTSPHandler:
-    def __init__(self, client_socket, video_file):
+    def __init__(self, client_socket):
         self.client_socket = client_socket
-        self.video_file = video_file
+        self.video_file = None # Will be set in SETUP
         self.session_id = 123456  # For simplicity, use a static session ID
         self.is_streaming = False
         self.client_address = client_socket.getpeername()
@@ -50,6 +50,9 @@ class RTSPHandler:
                 cseq = line.split(':')[1].strip()
                 break
         if command == 'SETUP':
+            # Extract video file from request line: SETUP rtsp://.../video_file RTSP/1.0
+            self.video_file = parts[1].split('/')[-1]
+            print(f"Client requested to stream file: {self.video_file}")
             self.handle_setup(cseq, lines)
         elif command == 'PLAY':
             self.handle_play(cseq)
