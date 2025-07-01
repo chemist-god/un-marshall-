@@ -1,0 +1,24 @@
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment folders
+.venv/
+venv/
+env/
+
+# User-uploaded content
+# This directory is created by upload_server.py
+uploads/
+
+# IDE and editor configuration files
+.vscode/
+.idea/
+
+# Example video files you might use for testing
+# It's better to keep large media files out of the repository
+*.mp4
+*.mov
+*.avi

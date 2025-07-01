@@ -30,8 +30,9 @@ if __name__ == '__main__':
             print(f'Upload failed: {response.text}')
             exit(1)
 
+    remote_video_path = f"uploads/{os.path.basename(video_path)}"
     # Create RTSP client and video receiver
-    rtsp_client = RTSPClient(SERVER_IP, RTSP_PORT, RTP_PORT)
+    rtsp_client = RTSPClient(SERVER_IP, RTSP_PORT, RTP_PORT, remote_video_path)
     video_receiver = VideoReceiver(RTP_PORT)
 
     try:
