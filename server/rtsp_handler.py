@@ -3,6 +3,7 @@ from vvideo_stream import VideoStream
 import time
 import socket
 import struct
+import os
 
 class RTSPHandler:
     def __init__(self, client_socket):
@@ -73,8 +74,20 @@ class RTSPHandler:
                 for part in parts:
                     if part.strip().startswith('client_port='):
                         self.client_rtp_port = int(part.strip().split('=')[1])
+        
         if not self.video_stream:
-            self.video_stream = VideoStream(self.video_file)
+            # Check if the file exists before creating the VideoStream
+            if not os.path.isfile(self.video_file):
+                print(f"Error: Requested video file does not exist: {self.video_file}")
+                self.send_response(cseq, 404, 'Not Found')
+                return # Stop processing this request
+            try:
+                self.video_stream = VideoStream(self.video_file)
+            except IOError as e:
+                print(f"Error opening video file: {e}")
+                self.send_response(cseq, 500, 'Internal Server Error')
+                return
+
         if not self.rtp_socket:
             self.rtp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.send_response(cseq, 200, 'OK', extra_headers=f'Session: {self.session_id}')
